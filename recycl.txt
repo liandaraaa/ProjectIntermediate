@@ -1,0 +1,185 @@
+public class hijabAdapter extends RecyclerView.Adapter<hijabAdapter.ViewHolder> {
+
+    private final OnItemClickListener listener;
+    private ArrayList<hijabModel> hijab;
+
+    private hijabAdapter (ArrayList<hijabModel> hijab, OnItemClickListener listener) {
+        this.hijab = hijab;
+        this.listener = listener;
+    }
+
+    private ItemClickCallback itemClickCallback;
+
+    public interface ItemClickCallback {
+        void onItemClick (int p);
+    }
+
+    public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
+        this.itemClickCallback = itemClickCallback;
+    }
+
+   @Override
+    public hijabAdapter.ViewHolder onCreateViewHolder (ViewGroup parent, int viewType) {
+       View view = LayoutInflater
+               .from(parent.getContext())
+               .inflate(R.layout.item_list, null);
+       ViewHolder viewHolder = new ViewHolder(view);
+
+       return viewHolder;
+   }
+
+    @Override
+    public void onBindViewHolder (hijabAdapter.ViewHolder holder, int position) {
+        holder.click(hijab.get(position), listener);
+        holder.gambar.setImageResource(hijab.get(position).getGambar());
+        holder.nama.setText(String.valueOf(hijab.get(position).getNama()));
+        holder.deskripsi.setText(String.valueOf(hijab.get(position).getDeskripsi()));
+        holder.harga.setText(String.valueOf(hijab.get(position).getHarga()));
+    }
+
+    public interface OnItemClickListener{
+        void onClick(hijabModel item);
+    }
+
+    @Override
+    public int getItemCount() {
+        return hijab.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView nama, deskripsi, harga;
+        ImageView gambar;
+        public ViewHolder(View itemView) {
+            super(itemView);
+            nama = (TextView) itemView.findViewById(R.id.nama_hijab);
+            deskripsi = (TextView) itemView.findViewById(R.id.deskripsi_hijab);
+            harga = (TextView) itemView.findViewById(R.id.harga_hijab);
+            gambar = (ImageView)itemView.findViewById(R.id.gambar_hijab);
+        }
+
+        public void click(final hijabModel hijabModel, final OnItemClickListener listener) {
+            itemView.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(hijabModel);
+                }
+            });
+        }
+    }
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lv_main"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp">
+
+    </ListView>
+
+
+
+public class RealmHelper {
+
+    private static final String TAG = "RealmHelper";
+
+    private Realm realm;
+    private RealmResults<Hijab> realmResults;
+    public Context context;
+
+    public RealmHelper (Context context) {
+        realm = Realm.getInstance(context);
+        this.context = context;
+    }
+
+    public void addHijab (String gambar, String nama, String deskripsi, String harga) {
+        Hijab hijab = new Hijab();
+        hijab.setGambar((int) (System.currentTimeMillis()/1000));
+        hijab.setNama(nama);
+        hijab.setDeksripsi(deskripsi);
+        hijab.setHarga(harga);
+
+        realm.beginTransaction();
+        realm.copyToRealm(hijab);
+        realm.commitTransaction();
+        ShowLog ("Pesanan anda berhasil ditambahkan kedalam keranjang");
+    }
+
+    public ArrayList<hijabModel> findAllHijab() {
+        ArrayList<hijabModel> data = new ArrayList<>();
+        realmResults = realm.where(Hijab.class)
+                .findAll();
+        realmResults.sort("gambar", Sort.ASCENDING);
+        if (realmResults.size() > 0) {
+            ShowLog ("Size = "+realmResults.size());
+            for (int i=0; i<realmResults.size(); i++){
+                String nama, deskripsi, harga;
+
+                int gambar = realmResults.get(i).getGambar();
+                nama = realmResults.get(i).getNama();
+                deskripsi = realmResults.get(i).getDeksripsi();
+                harga = realmResults.get(i).getHarga();
+                data.add(new hijabModel());
+            }
+        } else {
+            ShowLog("size = 0");
+        }
+
+        return data;
+    }
+
+    private void ShowLog(String s) {
+        Log.d(TAG, s);
+        Toast.makeText(context, s, Toast.LENGTH_LONG);
+    }
+}
+
+
+public class dataHijab {
+
+    public static String[] nama =
+            {"HSS Pashmina", "HSS Bergo", "HSS Rectangle",
+                    "HSS Argi Ciffon",
+                    "HSS Argi Cotton",
+                    "HSS Argi Rayon"};
+    public static String[] deskripsi =
+            {"Bahan Spandek, Warna Navy/Merah/Black", "Bahan Kaos, warna Merah/Cokelat",
+                    "Bahan Satin, warna Ungu/Hitam/Cream", "Warna kombinasi, motif bervariasi",
+                    "Warna Hitam/Putih/Cokelat", "Kombinasi dua warna, pemakaian praktis"};
+    public static String[] harga =
+            {"Rp. 45.000,-", "Rp. 20.000,-", "Rp. 30.000,-", "Rp. 35.000,-", "Rp. 25.000,-",
+                    "Rp.28.000"};
+    public static int[] gambar =
+            {R.drawable.pashmina, R.drawable.bergoceka, R.drawable.persegiempat,
+                    R.drawable.ciffon, R.drawable.cotton, R.drawable.rayon};
+
+    public static List<hijabModel> getListData(){
+        List<hijabModel> data = new ArrayList<>();
+
+
+        for (int i=0; i<nama.length; i++){
+            hijabModel item= new hijabModel();
+
+            item.setGambar(gambar[i]);
+            item.setNama(nama[i]);
+            item.setDeskripsi(deskripsi[i]);
+            item.setHarga(harga[i]);
+            data.add(item);
+        }
+
+        return data;
+    }
+
+}
+
+ <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Rv_katalog"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+    </android.support.v7.widget.RecyclerView>

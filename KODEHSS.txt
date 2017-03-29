@@ -1,0 +1,423 @@
+package com.project.lianda.hijabstylestore.UI;
+
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.project.lianda.hijabstylestore.Adapter.hijabAdapter;
+import com.project.lianda.hijabstylestore.Model.hijabModel;
+import com.project.lianda.hijabstylestore.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.id.list;
+
+public class Katalog extends AppCompatActivity {
+
+    public static String[] nama =
+            {"HSS Pashmina", "HSS Bergo", "HSS Rectangle",
+                    "HSS Argi Ciffon",
+                    "HSS Argi Cotton",
+                    "HSS Argi Rayon"};
+    public static String[] deskripsi =
+            {"Bahan Spandek, Warna Navy/Merah/Black", "Bahan Kaos, warna Merah/Cokelat",
+                    "Bahan Satin, warna Ungu/Hitam/Cream", "Warna kombinasi, motif bervariasi",
+                    "Warna Hitam/Putih/Cokelat", "Kombinasi dua warna, pemakaian praktis"};
+    public static String[] harga =
+            {"Rp. 45.000,-", "Rp. 20.000,-", "Rp. 30.000,-", "Rp. 35.000,-", "Rp. 25.000,-",
+                    "Rp.28.000"};
+    public static int[] foto =
+            {R.drawable.pashmina, R.drawable.bergoceka, R.drawable.persegiempat,
+                    R.drawable.ciffon, R.drawable.cotton, R.drawable.rayon};
+
+    private ListView listView;
+    private ArrayList list;
+    public CardView cardView;
+    Context context;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_katalog);
+
+        context = this;
+
+
+        listView = (ListView)findViewById(R.id.lv_main);
+        list = new ArrayList<>();
+
+        hijabModel hijabModel = null;
+
+        for (int i = 0; i < nama.length; i++) {
+            hijabModel item = new hijabModel(foto[i], nama[i], deskripsi[i], harga[i]);
+            list.add(item);
+        }
+
+
+        hijabAdapter adapter = new hijabAdapter(Katalog.this, nama, deskripsi, harga, foto);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick (AdapterView<?> parent, View view, int p, long id){
+                hijabModel hijab = (hijabModel)list.get(p);
+                Intent intent = new Intent(getApplicationContext(), detailHijab.class );
+
+                intent.putExtra(detailHijab.KEY_ITEM, hijab);
+                startActivity(intent);
+            }
+        }
+
+        );
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail_hijab, menu);
+        return true;
+    }
+
+
+}
+
+package com.project.lianda.hijabstylestore.Model;
+
+import java.io.Serializable;
+
+/**
+ * Created by lenovo on 23/03/2017.
+ */
+
+public class hijabModel implements Serializable {
+
+    private int gambar;
+    private String nama;
+    private String deskripsi;
+    private  String harga;
+
+    public hijabModel(int gambar, String nama, String deskripsi, String harga) {
+        this.gambar = gambar;
+        this.nama = nama;
+        this.deskripsi = deskripsi;
+        this.harga = harga;
+    }
+
+    public int getGambar() {
+        return gambar;
+    }
+
+    public void setGambar(int gambar) {
+        this.gambar = gambar;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public String getDeskripsi() {
+        return deskripsi;
+    }
+
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
+    }
+
+    public String getHarga() {
+        return harga;
+    }
+
+    public void setHarga(String harga) {
+        this.harga = harga;
+    }
+
+}
+
+
+package com.project.lianda.hijabstylestore.UI;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.project.lianda.hijabstylestore.Model.hijabModel;
+import com.project.lianda.hijabstylestore.R;
+
+public class detailHijab extends AppCompatActivity {
+
+    public static String KEY_ITEM = "item";
+    private TextView txtdetailnama;
+    private TextView txtdetaildeskripsi;
+    private TextView txtdetailharga;
+    private ImageView imageDetail;
+    private hijabModel item;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detail_hijab);
+        getSupportActionBar().setTitle("Detail Hijab");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        txtdetailnama = (TextView)findViewById(R.id.txt_detailnama);
+        txtdetaildeskripsi = (TextView)findViewById(R.id.txt_detaildeskripsi);
+        txtdetailharga = (TextView)findViewById(R.id.txt_detailharga);
+        imageDetail = (ImageView)findViewById(R.id.img_detail);
+
+        item = (hijabModel)getIntent().getSerializableExtra(KEY_ITEM);
+
+        imageDetail.setImageResource(item.getGambar());
+        txtdetailnama.setText(item.getNama());
+        txtdetaildeskripsi.setText(item.getDeskripsi());
+        txtdetailharga.setText(item.getHarga());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail_hijab, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item){
+        int id = item.getItemId();
+
+        if (id == R.id.action_share) {
+            share();
+            return true;
+        }
+
+        if (id == android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, item.getNama()+" "+item.getDeskripsi()+" "+item.getHarga());
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Kumpulan Hijab dengan beragam Style");
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+}
+
+package com.project.lianda.hijabstylestore;
+
+import android.content.Intent;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import com.project.lianda.hijabstylestore.UI.Katalog;
+
+public class MainActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                if (menuItem.isChecked())
+                    menuItem.setChecked(false);
+                else
+                    menuItem.setChecked(true);
+
+                drawerLayout.closeDrawers();
+
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation1:
+                        Toast.makeText(getApplicationContext(), "Ini Beranda", Toast.LENGTH_SHORT)
+                                .show();
+                        return true;
+
+                    case R.id.navigation2:
+                        Intent intent = new Intent(getApplicationContext(), Katalog.class);
+                        startActivity(intent);
+                        return true;
+
+                    case R.id.navigation3:
+                        Toast.makeText(getApplicationContext(), "Lihat belanjaan anda", Toast.LENGTH_SHORT)
+                                .show();
+                        return true;
+                }
+
+                return false;
+            }
+        });
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_main);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.OpenDrawer, R.string.closeDrawer){
+            @Override
+            public void onDrawerClosed (View drawerView){
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+    }
+}
+
+package com.project.lianda.hijabstylestore;
+
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+
+public class Splashscreen extends AppCompatActivity {
+
+    private static int splashInterval = 2000;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        setContentView(R.layout.activity_splashscreen);
+
+        new Handler().postDelayed(new Runnable(){
+
+            @Override
+            public void run() {
+                Intent i = new Intent(Splashscreen.this, MainActivity.class);
+                startActivity(i);
+                this.finish();
+            }
+            private void finish() {
+
+            }
+        }, splashInterval);
+    }
+}
+
+package com.project.lianda.hijabstylestore.Adapter;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.project.lianda.hijabstylestore.Model.hijabModel;
+import com.project.lianda.hijabstylestore.R;
+import com.project.lianda.hijabstylestore.UI.Katalog;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.Intent.getIntent;
+import static com.project.lianda.hijabstylestore.UI.detailHijab.KEY_ITEM;
+
+/**
+ * Created by lenovo on 23/03/2017.
+ */
+
+public class hijabAdapter extends BaseAdapter {
+
+    Context context;
+    String[] resultnama;
+    String[] resultdeskripsi;
+    String[] resultharga;
+    int[] gambar;
+
+    private static LayoutInflater inflater = null;
+    public hijabAdapter(Katalog katalog, String[] nama, String[] deskripsi, String[] harga, int[] foto) {
+        resultnama = nama;
+        resultdeskripsi = deskripsi;
+        resultharga = harga;
+        context = katalog;
+        gambar = foto;
+
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount() {
+        return resultnama.length;
+    }
+
+    @Override
+    public Object getItem(int p) {
+        return p;
+    }
+
+    @Override
+    public long getItemId(int p){
+        return p;
+    }
+
+    @Override
+    public View getView (int p, View convertView, ViewGroup parent) {
+        ViewHolder holder = new ViewHolder();
+        View view;
+
+        view = inflater.inflate(R.layout.item_list, null);
+        holder.ivgambar = (ImageView)view.findViewById(R.id.gambar_hijab);
+        holder.txtnama = (TextView)view.findViewById(R.id.nama_hijab);
+        holder.txtdeskripsi = (TextView)view.findViewById(R.id.deskripsi_hijab);
+        holder.txtharga = (TextView)view.findViewById(R.id.harga_hijab);
+
+        holder.ivgambar.setImageResource(gambar[p]);
+        holder.txtnama.setText(resultnama[p]);
+        holder.txtdeskripsi.setText(resultdeskripsi[p]);
+        holder.txtharga.setText(resultharga[p]);
+
+        return view;
+    }
+
+    public class ViewHolder {
+        ImageView ivgambar;
+        TextView txtnama, txtdeskripsi, txtharga;
+    }
+}

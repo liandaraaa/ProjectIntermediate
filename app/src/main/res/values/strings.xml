@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Hijab Style Store</string>
+    <string name="OpenDrawer">Drawer dibuka </string>
+    <string name="closeDrawer">Drawer ditutup</string>
+    <string name="nav_1">Beranda</string>
+    <string name="nav_2">Katalog</string>
+    <string name="nav_3">Keranjang</string>
+</resources>

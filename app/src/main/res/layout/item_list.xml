@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/cont_item">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        card_view:cardCornerRadius="4dp"
+        card_view:elevation="14dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:id="@+id/gambar_hijab"
+                android:layout_centerVertical="true"
+                android:paddingLeft="16dp"
+                android:src="@android:drawable/ic_menu_gallery"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/kode_hijab"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/nama_hijab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/gambar_hijab"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="48dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:text="Nama Barang"
+                android:textColor="@android:color/holo_purple"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/deskripsi_hijab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="48dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:text="deskripsi"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/nama_hijab"/>
+
+            <TextView
+                android:id="@+id/harga_hijab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="48dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:text="harga"
+                android:textSize="14sp"
+                android:textColor="@android:color/holo_purple"
+                android:layout_below="@+id/deskripsi_hijab"/>
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
